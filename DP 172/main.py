@@ -6,6 +6,9 @@ for i, j in enumerate(f):
 letters = {}
 for i in range(26):
 	letters[f[8*i].replace('\n', '')] = f[(8*i)+1:8*(i+1)]
+letters[' '] = []
+for i in range(7):
+	letters[' '].append('0 0 0 0 0')
 for i, j in letters.items():
 	for k, p in enumerate(j):
 		j[k] = p.replace(" ", '').replace('\n','').replace('0', ' ')
@@ -15,5 +18,5 @@ with open('output.pbm', 'w') as o:
 	for i in range(7):
 		for j in inp:
 			o.write(letters[j.upper()][i])
-			o.write(' ')
+			o.write('  ')
 		o.write('\n')
