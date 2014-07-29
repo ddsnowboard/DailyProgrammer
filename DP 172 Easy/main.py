@@ -14,7 +14,7 @@ for i, j in letters.items():
 		j[k] = p.replace(" ", '').replace('\n','').replace('0', ' ')
 inp = input("What do you want to write? ")
 with open('output.pbm', 'w') as o:
-	o.write("P1 \n{0} {1}\n".format(len(inp)*5, 6))
+	o.write("P1 \n{0} {1}\n".format(len(inp)*7, 7))
 	for i in range(7):
 		for j in inp:
 			o.write(letters[j.upper()][i])
