@@ -1,12 +1,11 @@
 import collections
 import tkinter as tk
-
-
+# File reading
 with open("windfarm.dat", 'r') as f:
 	file = [l.split(' ') for l in f]
 	
+# Actual program logic. 
 table = collections.defaultdict(lambda: collections.defaultdict(int))
-
 for i in file:
 	table[i[0]][i[1]] += int(i[2])
 	
