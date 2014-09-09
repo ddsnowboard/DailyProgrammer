@@ -14,6 +14,8 @@ import java.util.Arrays;
 //that takes a string, parses it, and sends it to the first. Except on reflect and finish, 
 //you don't need it for those. 
 
+// Output like this? http://docs.oracle.com/javase/tutorial/2d/basic2d/index.html
+
 
 public class Transformations {
 
