@@ -1,4 +1,4 @@
-
+import java.math.*;
 public class OrderedPair {
 
 	private float x;
@@ -43,8 +43,13 @@ public class OrderedPair {
 		this.y += y;
 	}
 	public void rotate(String s) {
-		// TODO Auto-generated method stub
-		
+		this.rotate(Float.valueOf(s.split(",")[0]), Float.valueOf(s.split(",")[0]), Float.valueOf(s.split(",")[2]));
+	}
+	public void rotate(float x, float y, float theta)
+	{
+//		THIS IS BROKEN
+		double distance = Math.sqrt((this.x-x)*(this.x-x)+(this.y-y)(this.y-y));
+		this.x = 
 	}
 	public void scale(String s) {
 		// TODO Auto-generated method stub
