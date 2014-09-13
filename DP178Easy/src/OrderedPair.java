@@ -45,6 +45,7 @@ public class OrderedPair {
 		this.x = x;
 	}
 	public void translate(String s) {
+	//Try to cut down on this splitting() many times stuff, I bet it slows things down with a longer file. 
 		this.translate(new Double(s.split(",")[0]), new Double(s.split(",")[1]));
 		
 	}
@@ -76,11 +77,11 @@ public class OrderedPair {
 	public void reflect(String s) {
 		if (s.equals("X"))
 		{
-			this.y = -1*this.y;
+			this.y*=-1;
 		}
 		else if (s.equals("Y"))
 		{
-			this.x = -1*this.x;
+			this.x*=-1;
 		}
 	}
 	public void print()
