@@ -53,12 +53,23 @@ public class OrderedPair {
 		this.y = y+(distance*Math.sin(angle));
 	}
 	public void scale(String s) {
-		// TODO Auto-generated method stub
-		
+		this.scale(new Double(s.split(",")[0]), new Double(s.split(",")[1]), new Double(s.split(",")[2]));
+	}
+	
+	public void scale (double x, double y, double factor)
+	{
+		this.x = x+(factor*(this.x-x));
+		this.y = y+(factor*(this.y-y));
 	}
 	public void reflect(String s) {
-		// TODO Auto-generated method stub
-		
+		if (s=="X")
+		{
+			this.y = -1*this.y;
+		}
+		else if (s=="Y")
+		{
+			this.x = -1*this.x;
+		}
 	}
 	public void print()
 	{
