@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 //Spec:
-//	translate(A, B)     - translate by (A, B) [DONE]
+//	translate(A, B)     - translate by (A, B)
 //	rotate(A, B, C)     - rotate around (A, B) by angle C (in radians) clockwise
 //	scale(A, B, C)      - scale relative to (A, B) with scale-factor C
 //	reflect(axis)       - reflect over the given axis
