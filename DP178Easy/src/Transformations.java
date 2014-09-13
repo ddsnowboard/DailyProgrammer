@@ -28,7 +28,11 @@ public class Transformations {
 		for(String s : instructions)
 		{
 			current = s;
-			if(current.contains("translate"))
+			if (current.contains("*"))
+			{
+				
+			}
+			else if(current.contains("translate"))
 			{
 				current = clean(current, "translate");
 				point.translate(current);
@@ -49,6 +53,7 @@ public class Transformations {
 				point.reflect(current);
 			}
 		}
+		point.print();
 
 	}
 
