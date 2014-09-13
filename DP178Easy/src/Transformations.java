@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 // Output like this? http://docs.oracle.com/javase/tutorial/2d/basic2d/index.html
 
+//Also, this still doesn't work. It should output (-4, -7), but it doesn't. Alas!
 
 public class Transformations {
 
