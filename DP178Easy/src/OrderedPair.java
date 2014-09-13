@@ -1,10 +1,9 @@
-import java.math.*;
 public class OrderedPair {
 
-	private float x;
-	private float y;
+	private double x;
+	private double y;
 
-	public OrderedPair(float x, float y)
+	public OrderedPair(double x, double y)
 	{
 		this.x = x;
 		this.y= y;
@@ -15,41 +14,43 @@ public class OrderedPair {
 		pair = pair.replace(")", "");
 		pair = pair.replace(" ","");
 		String[] coords = pair.split(",");
-		this.x = Float.valueOf(coords[0]);
-		this.y = Float.valueOf(coords[1]);
+		this.x = new Double(coords[0]);
+		this.y = new Double(coords[1]);
 	}
-	public float getY() {
+	public double getY() {
 		return y;
 	}
 
-	public void setY(float y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 
-	public float getX() {
+	public double getX() {
 		return x;
 	}
 
-	public void setX(float x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 	public void translate(String s) {
-		this.translate(Float.valueOf(s.split(",")[0]), Float.valueOf(s.split(",")[1]));
+		this.translate(new Double(s.split(",")[0]), new Double(s.split(",")[1]));
 		
 	}
-	public void translate(float x, float y)
+	public void translate(double x, double y)
 	{
 		this.x += x;
 		this.y += y;
 	}
 	public void rotate(String s) {
-		this.rotate(Float.valueOf(s.split(",")[0]), Float.valueOf(s.split(",")[0]), Float.valueOf(s.split(",")[2]));
+		this.rotate(new Double(s.split(",")[0]), new Double(s.split(",")[1]), new Double(s.split(",")[2]));
 	}
-	public void rotate(float x, float y, float theta)
+	public void rotate(double x, double y, double theta)
 	{
-//		THIS IS BROKEN
-		double distance = Math.sqrt((this.x-x)*(this.x-x)+(this.y-y)(this.y-y));
-		this.x = 
+		double distance = Math.sqrt((this.x-x)*(this.x-x)+(this.y-y)*(this.y-y));
+		double angle = Math.atan((this.y-y)/(this.x-x));
+		angle-=theta;
+		this.x = x+(distance*Math.cos(angle));
+		this.y = y+(distance*Math.sin(angle));
 	}
 	public void scale(String s) {
 		// TODO Auto-generated method stub
