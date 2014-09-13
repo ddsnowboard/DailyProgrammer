@@ -17,6 +17,18 @@ public class OrderedPair {
 		this.x = new Double(coords[0]);
 		this.y = new Double(coords[1]);
 	}
+	public void clean()
+	{
+		// Make this round properly. 
+		if(Math.abs(this.x%1) < .01 || Math.abs(this.x%1) > .99)
+		{
+			this.x = new Double(String.valueOf(Math.round(this.x)));
+		}
+		if(Math.abs(this.y%1) < .01 || Math.abs(this.y%1) > .99)
+		{
+			this.y = new Double(String.valueOf(Math.round(this.y)));
+		}
+	}
 	public double getY() {
 		return y;
 	}
@@ -49,8 +61,8 @@ public class OrderedPair {
 		double distance = Math.sqrt((this.x-x)*(this.x-x)+(this.y-y)*(this.y-y));
 		double angle = Math.atan((this.y-y)/(this.x-x));
 		angle-=theta;
-		this.x = x+(distance*Math.cos(angle));
-		this.y = y+(distance*Math.sin(angle));
+		this.x = x+(-1*distance*Math.cos(angle));
+		this.y = y+(-1*distance*Math.sin(angle));
 	}
 	public void scale(String s) {
 		this.scale(new Double(s.split(",")[0]), new Double(s.split(",")[1]), new Double(s.split(",")[2]));
@@ -62,17 +74,18 @@ public class OrderedPair {
 		this.y = y+(factor*(this.y-y));
 	}
 	public void reflect(String s) {
-		if (s=="X")
+		if (s.equals("X"))
 		{
 			this.y = -1*this.y;
 		}
-		else if (s=="Y")
+		else if (s.equals("Y"))
 		{
 			this.x = -1*this.x;
 		}
 	}
 	public void print()
 	{
+		this.clean();
 		System.out.print("("+this.x+","+this.y+")");
 	}
 }
