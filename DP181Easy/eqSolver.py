@@ -7,6 +7,10 @@ class Equation:
 		# Do something to this line, maybe a list comprehension using an outputted match object or something, 
 		# that will append the sign onto the term with it, so I can keep those. Because those are good. 
 		this.terms = re.compile(r"\+|-").split(this.eq)
+		# Use re.search() with "\+|-\d+[A-Za-z]\+|-", then use the returned match object things to split up the 
+		# string, including the first character, because that'll be the sign, and that's good. But you'll have to
+		# change the next few lines, ~14-20, to include the signs. But that's fine. Make sure you don't include 
+		# the next sign though, that's no good. 
 		for i in terms:
 			if not re.compile(r"[A-Za-z]").search(i):
 				this.coefficients[0] += float(i)
