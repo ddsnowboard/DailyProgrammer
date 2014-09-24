@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 class Equation:
 	def __init__(self, eq):					# y=2x^2-3x+5
 		self.coefficients = defaultdict(float)
@@ -12,15 +13,15 @@ class Equation:
 		# change the next few lines, ~14-20, to include the signs. But that's fine. Make sure you don't include 
 		# the next sign though, that's no good. 
 		self.terms = [i for i in self.terms if i != ''] # Just to make sure there is nothing problematic in it. 
-		for i in terms:
+		for i in self.terms:
 			if not re.compile(r"[A-Za-z]").search(i):
-				self.coefficients[0] += float(i)
-			elif re.compile(r"[\+-]{0-1}\d{0-1}[A-Za-z]").search(i):
-				self.terms[1]+=float(re.compile(r"[A-Za-z]").subn('',i)[0])
-			elif re.compile(r"[\+-]{0-1}\d+[A-Za-z]\*\*\d+").match(i):
-				self.coefficients[i[i.index("**")+2:]] += float(i[:re.compile("[A-Za-z]").search(i).span[1]])
-	def evaluate(x):
+				self.coefficients[0] += float(i)  # "+5"
+			elif re.compile(r"[\+-]?[\d\.]+[A-Za-z]").search(i):
+				self.coefficients[1]+=float(re.compile(r"[A-Za-z]").subn('',i)[0])  	#"-3" 
+			elif re.compile(r"[\+-]?[\d\.]+[A-Za-z]\*\*\d+").match(i):
+				self.coefficients[i[i.index("**")+2:]] += float(i[:re.compile("[A-Za-z]").search(i).span[1]]) # '2'
+	def evaluate(self, x):
 		end = 0
-		for i, j in self.coefficients:
+		for i, j in self.coefficients.items():
 			end+=j*x**i
 		return end
