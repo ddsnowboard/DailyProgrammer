@@ -14,9 +14,9 @@ class Equation:
 		for i in terms:
 			if not re.compile(r"[A-Za-z]").search(i):
 				this.coefficients[0] += float(i)
-			elif re.compile(r"[A-Za-z]$").search(i):
-				this.terms[1]+=float(re.compile(r"[A-Za-z]").subn(i)[0])
-			elif re.compile(r"-?\d+[A-Za-z]\*\*\d+").match(i):
+			elif re.compile(r"\d?[A-Za-z][+-$]").search(i):
+				this.terms[1]+=float(re.compile(r"[A-Za-z]|\+|-").subn('',i)[0])
+			elif re.compile(r"-{1}\d+[A-Za-z]\*\*\d+").match(i):
 				this.coefficients[i[i.index("**")+2:]] += float(i[:re.compile("[A-Za-z]").search(i).span[1]])
 	def evaluate(x):
 		end = 0
