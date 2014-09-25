@@ -28,8 +28,10 @@ class Equation:
 			a = self.coefficients[2]
 			b = self.coefficients[1]
 			c = self.coefficients[0]
-			print(a, b, c)
-			return ((-1*b+math.sqrt(b**2-4*a*c))/(2*a), (-1*b+math.sqrt(b**2-4*a*c))/(2*a))
+			try:
+				return ((-1*b+math.sqrt(b**2-4*a*c))/(2*a), (-1*b-math.sqrt(b**2-4*a*c))/(2*a))
+			except ValueError:
+				return None
 	def intersect(self, other):
 		if not type(other) == type(Equation("2x^2-4x+5")):
 			raise Exception("You seem to have made a stupid; this is supposed to take another equation and find the intersection")
@@ -59,5 +61,5 @@ class Equation:
 with open("input.txt", 'r') as f:
 	a = Equation(f.readline())
 	b = Equation(f.readline())
-# print(a.intersect(b))
+print(a.zero())
 input("Press any key...")
