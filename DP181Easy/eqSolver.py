@@ -1,5 +1,6 @@
 import re
 from collections import defaultdict
+import math
 class Equation:
 	def __init__(self, eq):	# y=2x^2-3x+5
 		self.coefficients = defaultdict(float)
@@ -20,6 +21,15 @@ class Equation:
 		for i, j in self.coefficients.items():
 			end+=j*x**i
 		return end
+	def zero(self):
+		if not self.degree == 2:
+			raise Error("This isn't a quadratic!")
+		else:
+			a = self.coefficients[2]
+			b = self.coefficients[1]
+			c = self.coefficients[0]
+			print(a, b, c)
+			return ((-1*b+math.sqrt(b**2-4*a*c))/(2*a), (-1*b+math.sqrt(b**2-4*a*c))/(2*a))
 	def intersect(self, other):
 		if not type(other) == type(Equation("2x^2-4x+5")):
 			raise Exception("You seem to have made a stupid; this is supposed to take another equation and find the intersection")
@@ -49,5 +59,5 @@ class Equation:
 with open("input.txt", 'r') as f:
 	a = Equation(f.readline())
 	b = Equation(f.readline())
-print(a.intersect(b))
+# print(a.intersect(b))
 input("Press any key...")
