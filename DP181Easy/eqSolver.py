@@ -14,7 +14,7 @@ class Equation:
 			elif re.compile(r"[\+-]?[\d\.]+[A-Za-z]$").search(i):
 				self.coefficients[1]+=float(re.compile(r"[A-Za-z]").subn('',i)[0])  	#"-3" 
 			elif re.compile(r"[\+-]?[\d\.]+[A-Za-z]\*\*\d+").match(i):
-				self.coefficients[i[i.index("**")+2:]] += float(i[:re.compile("[A-Za-z]").search(i).span()[1]-1]) # '2'
+				self.coefficients[int(i[i.index("**")+2:])] += float(i[:re.compile("[A-Za-z]").search(i).span()[1]-1]) # '2'
 		self.degree = len(self.coefficients)-1
 	def evaluate(self, x):
 		end = 0
