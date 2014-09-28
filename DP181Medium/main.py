@@ -42,3 +42,4 @@ with open("input.txt", 'r') as f:
 		for p in j.averages():
 			if p > speed_limit:
 				print("Vehicle {0} broke the speed limit by {1} {2}".format(i, round(p-speed_limit, 1), unit))
+	input()
