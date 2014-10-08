@@ -11,7 +11,7 @@ public class SymanticVersionSort {
 		try {
 			Scanner i = new Scanner(f);
 			i.nextInt();		// I didn't really need to use the number, but I needed to get past it. 
-			ArrayList<Version> versions = new ArrayList<Version>();
+			ArrayList<Version> versions = new ArrayList<>();
 			String temp;
 			while (i.hasNext()) {
 				temp = i.nextLine();
