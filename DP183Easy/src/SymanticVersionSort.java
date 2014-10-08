@@ -11,16 +11,19 @@ public class SymanticVersionSort {
 		try {
 			Scanner i = new Scanner(f);
 			i.nextInt();
+			String temp;
 			ArrayList<Version> versions = new ArrayList<Version>();
 			while (i.hasNext()) {
-				versions.add(new Version(i.nextLine()));
+				temp = i.nextLine();
+				if(!temp.equals(""))
+					versions.add(new Version(temp));
 			}
 			i.close();
 			// Bubble sort, I know. Please forgive me.
 			boolean done = false;
 			while (!done) {
 				done = true;
-				for (int q = 1; q <= versions.size(); q++) {
+				for (int q = 1; q < versions.size(); q++) {
 					if(switchable(versions.get(q-1),versions.get(q)))
 					{
 						Collections.swap(versions, q, q-1);
@@ -28,16 +31,15 @@ public class SymanticVersionSort {
 					}
 				}
 			}
-			System.out.print(versions);
+			for(Version v : versions)
+				System.out.println(v.orig);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	private static boolean switchable(Version earlier, Version later) {
-		earlier.print();
-		later.print();
+	public static boolean switchable(Version earlier, Version later) {
 		if(earlier.major>later.major)
 			return true;
 		if(earlier.minor>later.minor && earlier.major == later.major)

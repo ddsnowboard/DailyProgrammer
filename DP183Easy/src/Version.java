@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 public class Version {
 	private Pattern pattern;
 	private Matcher matcher;
+	public String orig;
 	public Integer major;
 	public Integer minor;
 	public Integer patch;
@@ -15,6 +16,7 @@ public class Version {
 			pattern = Pattern
 					.compile("(?<major>\\p{Digit}+?)\\.(?<minor>\\p{Digit}+?)\\.(?<patch>\\p{Digit}+)(?<label>\\-.+)?(?<meta>\\+.+)?");
 			matcher = pattern.matcher(v);
+			orig = v;
 			if (matcher.matches()) {
 				major = Integer.decode(matcher.group("major"));
 				minor = Integer.decode(matcher.group("minor"));
@@ -30,12 +32,13 @@ public class Version {
 	public void print()
 	{
 		Integer[] l = {major, minor, patch};
-		StringBuilder b = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		for(Integer s : l)
 		{
-			b.append(s);
+			sb.append(s);
+			sb.append(".");
 		}
-		b.append("\n");
-		System.out.print(b.toString());
+		sb.append("\n");
+		System.out.print(sb.toString());
 	}
 }
