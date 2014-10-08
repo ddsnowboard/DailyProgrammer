@@ -10,12 +10,13 @@ public class SymanticVersionSort {
 		File f = new File("input.txt");
 		try {
 			Scanner i = new Scanner(f);
-			i.nextInt();
-			String temp;
+			i.nextInt();		// I didn't really need to use the number, but I needed to get past it. 
 			ArrayList<Version> versions = new ArrayList<Version>();
+			String temp;
 			while (i.hasNext()) {
 				temp = i.nextLine();
-				if(!temp.equals(""))
+				if(!temp.equals(""))		// It kept reading an empty line for some reason. That was really strange and gave me 
+											// a lot of trouble. If anyone has any information on this, I'd be very interested to know. 
 					versions.add(new Version(temp));
 			}
 			i.close();

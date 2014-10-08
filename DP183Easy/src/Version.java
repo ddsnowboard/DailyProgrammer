@@ -16,8 +16,8 @@ public class Version {
 			pattern = Pattern
 					.compile("(?<major>\\p{Digit}+?)\\.(?<minor>\\p{Digit}+?)\\.(?<patch>\\p{Digit}+)(?<label>\\-.+)?(?<meta>\\+.+)?");
 			matcher = pattern.matcher(v);
-			orig = v;
 			if (matcher.matches()) {
+				orig = v;
 				major = Integer.decode(matcher.group("major"));
 				minor = Integer.decode(matcher.group("minor"));
 				patch = Integer.decode(matcher.group("patch"));
