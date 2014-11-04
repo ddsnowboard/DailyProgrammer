@@ -27,7 +27,7 @@ public class DP184Medium {
             ArrayList<String> sequence = new ArrayList<>();
             sequence.addAll(Arrays.asList(s.next().split("->")));
             String[] nuclei = new String[10000];
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < nuclei.length; i++) {
                 nuclei[i] = sequence.get(0);
             }
             HashMap<String, Double> map = new HashMap<>();
@@ -40,6 +40,16 @@ public class DP184Medium {
             }
             for (int i = 0; i < number; i++) {
                 nuclei = decay(nuclei, sequence, map);
+            }
+            int amt;
+            for (String p : sequence) {
+                amt = 0;
+                for (String q : nuclei) {
+                    if (q.equals(p)) {
+                        amt++;
+                    }
+                }
+                System.out.printf("%s: %f%%\n", p, 100 * ((float) amt / (float) nuclei.length));
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DP184Medium.class.getName()).log(Level.SEVERE, null, ex);
