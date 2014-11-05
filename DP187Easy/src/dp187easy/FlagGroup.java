@@ -1,8 +1,4 @@
 package dp187easy;
-/**
- *
- * @author ddsnowboard
- */
 public class FlagGroup {
     public String long_name;
     public boolean argument;
