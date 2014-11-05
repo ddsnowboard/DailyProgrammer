@@ -16,15 +16,14 @@ public class DP187Easy {
             File f = new File("input.txt");
             Scanner s = new Scanner(f);
             int n = s.nextInt();
-            HashMap map = new HashMap(n);
+            boolean expecting_argument = false;
+            FlagGroup expecting_flag = null;
+            HashMap<String, FlagGroup> map = new HashMap<>(n);
             String[] current;
-            Object[] this_pair;
             // Makes the list of available commands. 
             for (int i = 0; i < n; i++) {
                 current = s.next().split(":");
-                // Put a FlagGroup as the value. 
-                this_pair = {current[0], Boolean.valueOf(current[0].contains("*"))};
-                map.put(current[0], this_pair);
+                map.put(current[0].replace("*", ""), new FlagGroup(current[1], current[0].contains("*")));
             }
             // Skips the rest of the line, whatever newline characters et 
             // alia are on there. 
@@ -37,36 +36,49 @@ public class DP187Easy {
                 // If the first two characters are dashes, it's a long flag; 
                 // just print it. 
                 if (t.charAt(0) == '-' && t.charAt(1) == '-') {
-                    System.out.printf("flag: %s%n", t.substring(2));
-                // If the first character is a dash and it's longer than 2, then it's 
+                    if (t.contains("=")) {
+                        System.out.printf("flag: %s (value: %s)%n", t.split("=")[0].substring(2), t.split("=")[1]);
+                    } else {
+                        System.out.printf("flag: %s%n", t.substring(2));
+                    }
+                    // If the first character is a dash and it's longer than 2, then it's 
                     // a multi-short flag; look for it's long brothers and print them. 
                 } else if (t.charAt(0) == '-' && t.length() > 2) {
-                    // A stronger man would use an array, but I had no such luck. 
-                    // An ArrayList it is. 
-                    chars.clear();
                     for (int p = 1; p < t.length(); p++) {
-                        chars.add(t.charAt(p));
-                    }
-                    chars.trimToSize();
-                    for (char c : chars) {
-                        if (map.get(String.valueOf(c)) != null) {
-                            System.out.printf("flag: %s%n", map.get(String.valueOf(c)));
+                        if (map.get(String.valueOf(t.charAt(p))) != null) {
+                            if (!(p == t.length() - 1 && map.get(String.valueOf(t.charAt(p))).argument)) {
+                                System.out.printf("flag: %s%n", map.get(String.valueOf(t.charAt(p))).long_name);
+                            } else {
+                                expecting_argument = true;
+                                expecting_flag = map.get(String.valueOf(t.charAt(p)));
+                            }
                         } else {
                             System.out.println("Error: You gave an argument that's not defined!");
                             return;
                         }
                     }
-                // If it starts with a dash and isn't longer than 2, than it's a single
+                    // If it starts with a dash and isn't longer than 2, than it's a single
                     // short flag. Find it's long brother and print it. 
                 } else if (t.charAt(0) == '-' && t.length() == 2) {
                     if (map.get(t.substring(1)) != null) {
-                        System.out.printf("flag: %s%n", map.get(t.substring(1)));
+                        if (!(map.get(t.substring(1)).argument)) {
+                            System.out.printf("flag: %s%n", map.get(t.substring(1)).long_name);
+                        } else {
+                            expecting_argument = true;
+                            expecting_flag = map.get(t.substring(1));
+                        }
                     } else {
                         System.out.println("Error: You gave an argument that's not defined!");
+                        expecting_argument = false;
                         return;
                     }
                 } else {
-                    System.out.printf("parameter: %s%n", t);
+                    if (expecting_argument) {
+                        System.out.printf("flag: %s (value: %s)%n", expecting_flag.long_name, t);
+                        expecting_argument = false;
+                    } else {
+                        System.out.printf("parameter: %s%n", t);
+                    }
                 }
             }
         } catch (FileNotFoundException ex) {
