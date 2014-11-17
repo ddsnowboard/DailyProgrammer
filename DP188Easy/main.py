@@ -14,18 +14,17 @@ def writeFormatted(match):
 	else:
 		month = match.group('month')
 	return "{0}-{1:02d}-{2:02d}\n".format(int(year), int(month), int(match.group("day")))
+	
+regexes = [ re.compile(r'(?P<year>[0-9]{4})[-](?P<month>[0-9]{2})[-](?P<day>[0-9]{2})'), 
+			re.compile(r'(?P<month>[0-9]{2})[/](?P<day>[0-9]{2})[/](?P<year>[0-9]{2})'),
+			re.compile(r'(?P<month>[0-9]{2})#(?P<year>[0-9]{2})#(?P<day>[0-9]{2})'),
+			re.compile(r'(?P<day>[0-9]{2})[*](?P<month>[0-9]{2})[*](?P<year>[0-9]{4})'),
+			re.compile(r'(?P<month>[A-Za-z]{3}) (?P<day>[0-9]{2}), (?P<year>[0-9]{4})'),
+			re.compile(r'(?P<month>[A-Za-z]{3}) (?P<day>[0-9]{2}), (?P<year>[0-9]{2})')]
 with open('input.txt', 'r') as i:
 	with open('output.txt', 'w') as o:
 		for l in i:
-			if re.match(r'[0-9]{4}[-][0-9]{2}[-][0-9]{2}', l):
-				o.write(l)
-			elif re.match(r'[0-9]{2}[/][0-9]{2}[/][0-9]{2}', l):
-				o.write(writeFormatted(re.match(r'(?P<month>[0-9]{2})[/](?P<day>[0-9]{2})[/](?P<year>[0-9]{2})', l)))
-			elif re.match(r'[0-9]{2}#[0-9]{2}#[0-9]{2}', l):
-				o.write(writeFormatted(re.match(r'(?P<month>[0-9]{2})#(?P<year>[0-9]{2})#(?P<day>[0-9]{2})', l)))
-			elif re.match(r'[0-9]{2}[*][0-9]{2}[*][0-9]{2}', l):
-				o.write(writeFormatted(re.match(r'(?P<day>[0-9]{2})[*](?P<month>[0-9]{2})[*](?P<year>[0-9]{4})', l)))
-			elif re.match(r'[A-Za-z]{3} [0-9]{2}, [0-9]{4}', l):
-				o.write(writeFormatted(re.match(r'(?P<month>[A-Za-z]{3}) (?P<day>[0-9]{2}), (?P<year>[0-9]{4})', l)))
-			elif re.match(r'[A-Za-z]{3} [0-9]{2}, [0-9]{2}', l):
-				o.write(writeFormatted(re.match(r'(?P<month>[A-Za-z]{3}) (?P<day>[0-9]{2}), (?P<year>[0-9]{2})', l)))
+			for regex in regexes:
+				if regex.match(l):
+					o.write(writeFormatted(regex.match(l)))
+					break
