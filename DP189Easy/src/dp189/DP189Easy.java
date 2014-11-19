@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dp189;
 
 import java.io.File;
@@ -10,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -29,6 +25,7 @@ public class DP189Easy {
         boolean finished = false;
         ArrayList<String> goodLetters = new ArrayList<>(word.length());
         ArrayList<String> badLetters = new ArrayList<>(25);
+        Pattern letters = Pattern.compile("[A-Za-z]");
         int misses = 0;
         String currentGuess;
         while (!finished) {
@@ -36,11 +33,11 @@ public class DP189Easy {
             System.out.println(getLetters(word, goodLetters));
             System.out.println("What letter do you want to guess?");
             currentGuess = s.nextLine().toLowerCase();
-            if (currentGuess.length() > 1)
+            if (!letters.matcher(currentGuess).matches()) {
                 System.out.println("You can only guess one letter.");
-            else if (word.toLowerCase().contains(currentGuess)) {
-                System.out.println("You already guessed that letter!");
             } else if (badLetters.contains(currentGuess) || goodLetters.contains(currentGuess)) {
+                System.out.println("You already guessed that letter!");
+            } else if (word.toLowerCase().contains(currentGuess)) {
                 goodLetters.add(currentGuess);
                 System.out.println("That's right!");
             } else {
@@ -49,13 +46,15 @@ public class DP189Easy {
                 misses++;
             }
             Thread.sleep(DELAY);
-            if(goodLetters.size() == word.length() || misses == 7)
+            if (goodLetters.size() == word.length() || misses == 7) {
                 finished = true;
+            }
         }
-        if(misses == 7)
-            System.out.println("You lose! The answer was" + word);
-        else
+        if (misses == 7) {
+            System.out.println("You lose! The answer was " + word);
+        } else {
             System.out.println("You win!");
+        }
     }
 
     public static String getMan(int i) {
@@ -133,6 +132,7 @@ public class DP189Easy {
     public static String getWord() throws FileNotFoundException {
         Scanner input = new Scanner(System.in);
         String difficulty;
+        Pattern punctuation = Pattern.compile("[^A-Za-z]");
         ArrayList<String> easy = new ArrayList<>(15000);
         ArrayList<String> medium = new ArrayList<>(30000);
         ArrayList<String> hard = new ArrayList<>(75000);
@@ -173,7 +173,7 @@ public class DP189Easy {
             }
         }
         s.close();
-        return word.toLowerCase();
+        return punctuation.matcher(word.toLowerCase()).replaceAll("");
     }
 
     public static String getLetters(String word, ArrayList<String> letters) {
