@@ -19,18 +19,43 @@ public class DP189Easy {
 
     /**
      * @param args the command line arguments
-     * @throws java.io.FileNotFoundException if it can't find the words file. 
+     * @throws java.io.FileNotFoundException if it can't find the words file.
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    private final static long DELAY = 1000l;
+
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         String word = getWord();
+        Scanner s = new Scanner(System.in);
         boolean finished = false;
         ArrayList<String> goodLetters = new ArrayList<>(word.length());
+        ArrayList<String> badLetters = new ArrayList<>(25);
         int misses = 0;
-        while (!finished)
-        {
+        String currentGuess;
+        while (!finished) {
             System.out.println(getMan(misses));
             System.out.println(getLetters(word, goodLetters));
+            System.out.println("What letter do you want to guess?");
+            currentGuess = s.nextLine().toLowerCase();
+            if (currentGuess.length() > 1)
+                System.out.println("You can only guess one letter.");
+            else if (word.toLowerCase().contains(currentGuess)) {
+                System.out.println("You already guessed that letter!");
+            } else if (badLetters.contains(currentGuess) || goodLetters.contains(currentGuess)) {
+                goodLetters.add(currentGuess);
+                System.out.println("That's right!");
+            } else {
+                System.out.println("Nope!");
+                badLetters.add(currentGuess);
+                misses++;
+            }
+            Thread.sleep(DELAY);
+            if(goodLetters.size() == word.length() || misses == 7)
+                finished = true;
         }
+        if(misses == 7)
+            System.out.println("You lose! The answer was" + word);
+        else
+            System.out.println("You win!");
     }
 
     public static String getMan(int i) {
@@ -148,21 +173,19 @@ public class DP189Easy {
             }
         }
         s.close();
-        return word;
+        return word.toLowerCase();
     }
-    
-    public static String getLetters(String word, ArrayList<String> letters)
-    {
+
+    public static String getLetters(String word, ArrayList<String> letters) {
         StringBuilder output = new StringBuilder();
-        for(int i = 0; i<word.length(); i++)
-        {
-            if(letters.contains(String.valueOf(word.charAt(i))))
-            {
+        for (int i = 0; i < word.length(); i++) {
+            if (letters.contains(String.valueOf(word.charAt(i)))) {
                 output.append(String.valueOf(word.charAt(i)));
-            }
-            else
+            } else {
                 output.append("_");
+            }
+            output.append(" ");
         }
         return output.toString();
     }
-    }
+}
