@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -25,7 +26,10 @@ public class DP190Medium {
         File words = new File("enable1.txt.");
 //        File words = new File("short.txt");
         Scanner sc = new Scanner(words);
-        ArrayList<String> wordsToFind = new ArrayList<>();
+        ArrayList<ArrayList<String>> wordsToFind = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            wordsToFind.add(new ArrayList<>());
+        }
         ArrayList<String> wordsToSearch = new ArrayList<>();
         String currentHighestWord = "";
         int counter = 0;
@@ -34,12 +38,14 @@ public class DP190Medium {
         String next;
         while (sc.hasNext()) {
             next = sc.nextLine();
-            wordsToFind.add(next);
+            wordsToFind.get(next.length()).add(next);
             if (next.length() > 2) {
                 wordsToSearch.add(next);
             }
         }
-//        Collections.sort(wordsToFind, new inverseLengthComparator());
+        for (ArrayList<String> a : wordsToFind) {
+            Collections.sort(a);
+        }
 //        Collections.sort(wordsToSearch, new lengthComparator());
         int thisCount;
         int thisLength;
@@ -63,7 +69,7 @@ public class DP190Medium {
                         try {
 //                            Replace contains() with a binary search, seeing as
 //                            you can sort this list pretty easily. 
-                            if (wordsToFind.contains(beingSearched.substring(start, start + end)) && !thisList.contains(beingSearched.substring(start, end))) {
+                            if (Collections.binarySearch(wordsToFind.get(end - start), beingSearched.substring(start, start + end)) != -1 && (Collections.binarySearch(thisList, beingSearched.substring(start, start+end))) != -1) {
                                 thisCount++;
                                 thisList.add(beingSearched.substring(start, start + end));
                             }
