@@ -1,15 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dp190medium;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -25,7 +19,6 @@ public class DP190Medium {
     public static void main(String[] args) throws FileNotFoundException {
         File words = new File("enable1.txt.");
 //        File words = new File("short.txt");
-        Scanner sc = new Scanner(words);
         ArrayList<ArrayList<String>> wordsToFind = new ArrayList<>();
         ArrayList<String> wordsToSearch = new ArrayList<>();
         initArrays(wordsToSearch, wordsToFind, words);
@@ -36,8 +29,8 @@ public class DP190Medium {
         int thisCount;
         int thisLength;
         ArrayList<String> thisList;
-        for (String beingSearched : wordsToSearch) {
-//        String beingSearched = "ethylenediaminetetraacetates";
+//        for (String beingSearched : wordsToSearch) {
+        String beingSearched = "ethylenediaminetetraacetates";
             thisCount = 0;
             thisList = new ArrayList<>();
             thisLength = beingSearched.length();
@@ -54,12 +47,14 @@ public class DP190Medium {
                     }
                 }
             }
+            if(beingSearched.equals("ethylenediaminetetraacetates"))
+                System.out.println(thisCount);
             if (thisCount > currentHighestNumber) {
                 currentHighestNumber = thisCount;
                 currentHighestWord = beingSearched;
                 currentHighestList = thisList;
             }
-        }
+//        }
 
         System.out.printf("%s is the word with the most, with %d%n", currentHighestWord, currentHighestNumber);
         for (String s : currentHighestList) {
