@@ -27,67 +27,63 @@ public class DP190Medium {
 //        File words = new File("short.txt");
         Scanner sc = new Scanner(words);
         ArrayList<ArrayList<String>> wordsToFind = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
-            wordsToFind.add(new ArrayList<>());
-        }
         ArrayList<String> wordsToSearch = new ArrayList<>();
+        initArrays(wordsToSearch, wordsToFind, words);
+
         String currentHighestWord = "";
-        int counter = 0;
         int currentHighestNumber = 0;
         ArrayList<String> currentHighestList = new ArrayList<>();
-        String next;
-        while (sc.hasNext()) {
-            next = sc.nextLine();
-            wordsToFind.get(next.length()).add(next);
-            if (next.length() > 2) {
-                wordsToSearch.add(next);
-            }
-        }
-        for (ArrayList<String> a : wordsToFind) {
-            Collections.sort(a);
-        }
-//        Collections.sort(wordsToSearch, new lengthComparator());
         int thisCount;
         int thisLength;
         ArrayList<String> thisList;
         for (String beingSearched : wordsToSearch) {
-            counter++;
-            if (counter == 1000) {
-                System.out.println(beingSearched);
-                System.out.println();
-                System.out.println(currentHighestNumber);
-                System.out.println(currentHighestWord);
-                System.out.println(currentHighestList);
-                counter = 0;
-            }
-            if (beingSearched.length() > 11) {
-                thisCount = 0;
-                thisList = new ArrayList<>();
-                thisLength = beingSearched.length();
-                for (int start = 0; start < thisLength - 2; start++) {
-                    for (int end = start + 2; end < thisLength - start; end++) {
-                        try {
-//                            Replace contains() with a binary search, seeing as
-//                            you can sort this list pretty easily. 
-                            if (Collections.binarySearch(wordsToFind.get(end - start), beingSearched.substring(start, start + end)) != -1 && (Collections.binarySearch(thisList, beingSearched.substring(start, start+end))) != -1) {
-                                thisCount++;
-                                thisList.add(beingSearched.substring(start, start + end));
-                            }
-                        } catch (StringIndexOutOfBoundsException e) {
-                            System.out.printf("%d, %d, %s%n", start, end, beingSearched);
+//        String beingSearched = "ethylenediaminetetraacetates";
+            thisCount = 0;
+            thisList = new ArrayList<>();
+            thisLength = beingSearched.length();
+            for (int start = 0; start < thisLength - 2; start++) {
+                for (int end = 2; end < thisLength - start + 1; end++) {
+//                    System.out.printf("Word: %s, Start: %d, End: %d, Substring: %s%n", beingSearched, start, end, beingSearched.subSequence(start, start + end));
+                    try {
+                        if (Collections.binarySearch(wordsToFind.get(end), beingSearched.substring(start, start + end)) >= 0 && !thisList.contains(beingSearched.substring(start, start + end)) && !beingSearched.equals(beingSearched.substring(start, start + end))) {
+                            thisCount++;
+                            thisList.add(beingSearched.substring(start, start + end));
                         }
+                    } catch (StringIndexOutOfBoundsException e) {
+                        System.out.printf("%d, %d, %s%n", start, end, beingSearched);
                     }
                 }
-                if (thisCount > currentHighestNumber) {
-                    currentHighestNumber = thisCount;
-                    currentHighestWord = beingSearched;
-                    currentHighestList = thisList;
-                }
+            }
+            if (thisCount > currentHighestNumber) {
+                currentHighestNumber = thisCount;
+                currentHighestWord = beingSearched;
+                currentHighestList = thisList;
             }
         }
+
         System.out.printf("%s is the word with the most, with %d%n", currentHighestWord, currentHighestNumber);
         for (String s : currentHighestList) {
             System.out.println(s);
+        }
+    }
+
+    public static void initArrays(ArrayList<String> toSearch, ArrayList<ArrayList<String>> toFind, File file) throws FileNotFoundException {
+        toFind.clear();
+        for (int i = 0; i < 30; i++) {
+            toFind.add(new ArrayList<>());
+        }
+
+        Scanner sc = new Scanner(file);
+        String next;
+        while (sc.hasNextLine()) {
+            next = sc.nextLine();
+            if (next.length() >= 2) {
+                toSearch.add(next);
+                toFind.get(next.length()).add(next);
+            }
+        }
+        for (ArrayList<String> a : toFind) {
+            Collections.sort(a);
         }
     }
 
