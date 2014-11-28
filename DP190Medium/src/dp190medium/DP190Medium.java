@@ -11,8 +11,10 @@ import java.util.Scanner;
  * @author ddsnowboard
  */
 public class DP190Medium {
+
     public static void main(String[] args) throws FileNotFoundException {
-        File words = new File("enable1.txt.");
+        File words = new File("huge.txt.");
+//        File words = new File("enable1.txt");
         ArrayList<ArrayList<String>> wordsToFind = new ArrayList<>();
         ArrayList<String> wordsToSearch = new ArrayList<>();
         initArrays(wordsToSearch, wordsToFind, words);
@@ -53,12 +55,19 @@ public class DP190Medium {
 
     public static void initArrays(ArrayList<String> toSearch, ArrayList<ArrayList<String>> toFind, File file) throws FileNotFoundException {
         toFind.clear();
-        for (int i = 0; i < 30; i++) {
-            toFind.add(new ArrayList<>());
-        }
-
         Scanner sc = new Scanner(file);
         String next;
+        int longestWordLength = 0;
+        while (sc.hasNextLine()) {
+            next = sc.nextLine();
+            if (next.length() > longestWordLength) {
+                longestWordLength = next.length();
+            }
+        }
+        for (int i = 0; i < longestWordLength + 1; i++) {
+            toFind.add(new ArrayList<>());
+        }
+        sc = new Scanner(file);
         while (sc.hasNextLine()) {
             next = sc.nextLine();
             if (next.length() >= 2) {
