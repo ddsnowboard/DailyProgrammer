@@ -22,20 +22,19 @@ public class DP190Medium {
         ArrayList<ArrayList<String>> wordsToFind = new ArrayList<>();
         ArrayList<String> wordsToSearch = new ArrayList<>();
         initArrays(wordsToSearch, wordsToFind, words);
-
         String currentHighestWord = "";
         int currentHighestNumber = 0;
         ArrayList<String> currentHighestList = new ArrayList<>();
         int thisCount;
         int thisLength;
         ArrayList<String> thisList;
-//        for (String beingSearched : wordsToSearch) {
-        String beingSearched = "ethylenediaminetetraacetates";
+        for (String beingSearched : wordsToSearch) {
+//        String beingSearched = "ethylenediaminetetraacetates";
             thisCount = 0;
             thisList = new ArrayList<>();
             thisLength = beingSearched.length();
-            for (int start = 0; start < thisLength - 2; start++) {
-                for (int end = 2; end < thisLength - start + 1; end++) {
+            for (int start = 0; start <= thisLength - 2; start++) {
+                for (int end = 2; end <= thisLength - start; end++) {
 //                    System.out.printf("Word: %s, Start: %d, End: %d, Substring: %s%n", beingSearched, start, end, beingSearched.subSequence(start, start + end));
                     try {
                         if (Collections.binarySearch(wordsToFind.get(end), beingSearched.substring(start, start + end)) >= 0 && !thisList.contains(beingSearched.substring(start, start + end)) && !beingSearched.equals(beingSearched.substring(start, start + end))) {
@@ -47,14 +46,12 @@ public class DP190Medium {
                     }
                 }
             }
-            if(beingSearched.equals("ethylenediaminetetraacetates"))
-                System.out.println(thisCount);
             if (thisCount > currentHighestNumber) {
                 currentHighestNumber = thisCount;
                 currentHighestWord = beingSearched;
                 currentHighestList = thisList;
             }
-//        }
+        }
 
         System.out.printf("%s is the word with the most, with %d%n", currentHighestWord, currentHighestNumber);
         for (String s : currentHighestList) {
