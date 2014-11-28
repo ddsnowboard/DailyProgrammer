@@ -11,14 +11,8 @@ import java.util.Scanner;
  * @author ddsnowboard
  */
 public class DP190Medium {
-
-    /**
-     * @param args the command line arguments
-     * @throws java.io.FileNotFoundException
-     */
     public static void main(String[] args) throws FileNotFoundException {
         File words = new File("enable1.txt.");
-//        File words = new File("short.txt");
         ArrayList<ArrayList<String>> wordsToFind = new ArrayList<>();
         ArrayList<String> wordsToSearch = new ArrayList<>();
         initArrays(wordsToSearch, wordsToFind, words);
@@ -29,13 +23,11 @@ public class DP190Medium {
         int thisLength;
         ArrayList<String> thisList;
         for (String beingSearched : wordsToSearch) {
-//        String beingSearched = "ethylenediaminetetraacetates";
             thisCount = 0;
             thisList = new ArrayList<>();
             thisLength = beingSearched.length();
             for (int start = 0; start <= thisLength - 2; start++) {
                 for (int end = 2; end <= thisLength - start; end++) {
-//                    System.out.printf("Word: %s, Start: %d, End: %d, Substring: %s%n", beingSearched, start, end, beingSearched.subSequence(start, start + end));
                     try {
                         if (Collections.binarySearch(wordsToFind.get(end), beingSearched.substring(start, start + end)) >= 0 && !thisList.contains(beingSearched.substring(start, start + end)) && !beingSearched.equals(beingSearched.substring(start, start + end))) {
                             thisCount++;
