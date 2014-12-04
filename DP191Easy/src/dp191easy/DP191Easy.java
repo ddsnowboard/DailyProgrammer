@@ -52,8 +52,8 @@ public class DP191Easy {
         }
         Collections.sort(pairs, new PairAmountComparator());
         Collections.reverse(pairs);
-        for (Pair p : pairs) {
-            System.out.printf("%s : %d%n", p.word, p.timesUsed);
+        for (int i = 0;i<10;i++) {
+            System.out.printf("%s : %d%n", pairs.get(i).word, pairs.get(i).timesUsed);
         }
     }
     
