@@ -16,5 +16,9 @@ public class Redirect {
     {
         this.input = s.split(":")[0];
         this.output = s.split(":")[1];
+        if(this.input.charAt(this.input.length()-1) != '/')
+            this.input += "/";
+        if(this.output.charAt(this.output.length()-1) != '/')
+            this.output += "/";
     }
 }
