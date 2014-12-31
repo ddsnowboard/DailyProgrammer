@@ -5,22 +5,20 @@
  */
 package dp195medium;
 
-import java.util.Random;
+import java.util.Comparator;
 
 /**
  *
  * @author ddsnowboard
  */
-public class Die {
+class ReverseComparator implements Comparator<Integer> {
 
-    private int sides;
-    private static final Random rand = new Random();
-
-    public Die(int sides) {
-        this.sides = sides;
+    public ReverseComparator() {
     }
 
-    public int roll() {
-        return rand.nextInt(sides - 1) + 1;
+    @Override
+    public int compare(Integer o1, Integer o2) {
+        return o2 - o1;
     }
+
 }
