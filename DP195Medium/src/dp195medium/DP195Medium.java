@@ -25,6 +25,7 @@ public class DP195Medium {
         Pattern parser = Pattern.compile("(?<number>[0-9]+)d(?<sides>[0-9]+)");
         Scanner s = new Scanner(inFile);
         String input = s.nextLine();
+        s.close();
         boolean found = false;
         Matcher matcher = parser.matcher(input.split(" ")[0]);
         matcher.matches();
@@ -52,11 +53,15 @@ public class DP195Medium {
         Arrays.sort(numbers, Collections.reverseOrder());
         int curr;
         StringBuilder currString;
-        for (int i = 0; i < Math.pow(2, numbers.length); i++) {
+        int[] powersOf2 = new int[numbers.length+1];
+        for (int i = 0; i <= numbers.length; i++) {
+            powersOf2[i] = (int) Math.pow(2, i);
+        }
+        for (int i = 0; i < powersOf2[numbers.length]; i++) {
             curr = 0;
             currString = new StringBuilder();
             for (int j = 0; j < numbers.length; j++) {
-                if ((i & ((int) Math.pow(2, j))) > 0) {
+                if ((i & (powersOf2[j])) > 0) {
                     currString.append("+");
                     curr += numbers[j];
                 } else {
