@@ -15,11 +15,6 @@ import java.util.Scanner;
  * @author ddsnowboard
  */
 public class DP195Easy {
-
-    /**
-     * @param args the command line arguments
-     */
-//    Make it go over and over, and also make it handle slashy shenanigans better. 
     public static void main(String[] args) throws FileNotFoundException {
         File f = new File("input.txt");
         Scanner s = new Scanner(f);
@@ -43,5 +38,4 @@ public class DP195Easy {
         }
         System.out.println(path);
     }
-
 }
