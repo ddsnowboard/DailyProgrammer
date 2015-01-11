@@ -3,15 +3,19 @@ import java.util.Iterator;
 public class SequenceIterator implements Iterator<Integer> {
 
 	private int[] sequence;
-	private int cursor = 0;
+	private int cursor = -1;
 
 	public SequenceIterator(int lines) {
-		sequence = new int[(lines * 2) - 1];
+		int counter = 0;
+		sequence = new int[(lines * 2) - 2];
 		for (int i = 0; i < lines; i++) {
-			sequence[i] = i;
+			sequence[counter] = i;
+			counter++;
 		}
-		for (int i = lines; i < sequence.length; i++)
-			sequence[i] = (lines - i) + 1;
+		for (int i = 1; i <= sequence.length - lines; i++) {
+			sequence[counter] = (lines - i) - 1;
+			counter++;
+		}
 	}
 
 	@Override
@@ -21,6 +25,7 @@ public class SequenceIterator implements Iterator<Integer> {
 
 	@Override
 	public Integer next() {
+		cursor++;
 		return sequence[cursor % sequence.length];
 	}
 
