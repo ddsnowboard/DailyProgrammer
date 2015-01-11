@@ -3,7 +3,7 @@ import java.util.Iterator;
 public class SequenceIterator implements Iterator<Integer> {
 
 	private int[] sequence;
-	private int cursor = -1;
+	private int cursor = 0;
 
 	public SequenceIterator(int lines) {
 		int counter = 0;
@@ -26,7 +26,7 @@ public class SequenceIterator implements Iterator<Integer> {
 	@Override
 	public Integer next() {
 		cursor++;
-		return sequence[cursor % sequence.length];
+		return sequence[cursor++ % sequence.length];
 	}
 
 }
