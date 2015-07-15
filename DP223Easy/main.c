@@ -1,5 +1,7 @@
 #include <string.h>
 #include <stdio.h>
+#define FALSE 0
+#define TRUE 1
 int garland(char*);
 
 int main(int argc, char** argv)
@@ -14,7 +16,6 @@ int main(int argc, char** argv)
 int garland(char* word)
 {
     size_t length = strlen(word);
-    printf("%s\n", word);
     if(length == 0)
     {
         return 0;
@@ -46,4 +47,15 @@ int garland(char* word)
         }
     }
     return out;
+}
+int walkThrough(char* word, int offset)
+{
+    int i;
+    int out = 1;
+    size_t length = strlen(word);
+    for(i = 0;i + offset < length;i++)
+    {
+       out = out && (word[i] == word[i + offset]);
+    }
+    return out; 
 }
