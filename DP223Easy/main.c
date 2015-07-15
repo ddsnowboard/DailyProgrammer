@@ -1,14 +1,15 @@
 #include <string.h>
 #include <stdio.h>
-#define FALSE 0
-#define TRUE 1
 int garland(char*);
+int walkThrough(char*, int);
 
+// Run through wordlist.txt or whatever with this and see how fast it is. 
+// Also, find out how to do file input in C. 
 int main(int argc, char** argv)
 {
-    printf("%d\n", garland(""));
-    printf("%d\n", garland("test"));
+    printf("%d\n", garland("programmer"));
     printf("%d\n", garland("ceramic"));
+    printf("%d\n", garland("onion"));
     printf("%d\n", garland("alfalfa"));
     return 0;
 }
@@ -20,30 +21,15 @@ int garland(char* word)
     {
         return 0;
     }
-    int out = length + 1;
-    int i;
-    int breaking = 0;
-    // I'm trying to use these loops to walk through the string together. Unfortunately, that's
-    // not going too well for various reasons. Anyway, here's the link. 
-    // https://www.reddit.com/r/dailyprogrammer/comments/3d4fwj/20150713_challenge_223_easy_garland_words/
-    for(i = length - 1; i > 0;i--)
+    int offset = length - 1;
+    int out = 0;
+    int currentResult;
+    for(;offset >= 1; offset--)
     {
-        --out;
-        int l;
-        for(l = 0;l<length; l++)
+        currentResult = walkThrough(word, offset);
+        if(currentResult)
         {
-            printf("The front letter is %c and the back letter is %c\n", word[l], word[i + l]);
-            printf("i is %d and l is %d\n", i, l);
-            if(word[l] != word[i + l])
-            {
-                break;
-                breaking = 1;
-            }
-        }
-        if(breaking == 1)
-        {
-            continue;
-            breaking = 0;
+            out = length - offset;
         }
     }
     return out;
@@ -55,7 +41,7 @@ int walkThrough(char* word, int offset)
     size_t length = strlen(word);
     for(i = 0;i + offset < length;i++)
     {
-       out = out && (word[i] == word[i + offset]);
+        out = out & (word[i] == word[i + offset]);
     }
     return out; 
 }
