@@ -1,4 +1,23 @@
 <?php
+function flatten(array $array)
+{
+    $out = array();
+    foreach($array as $n)
+    {
+        if(!is_array($n))
+        {
+            $out[] = $n;
+        }
+        else
+        {
+            foreach(flatten($n) as $a)
+            {
+                $out[] = $a;
+            }
+        }
+    }
+    return $out;
+}
 class Node {
     private $connections = [];
     public function connect(Node $node)
@@ -11,29 +30,20 @@ class Node {
     }
     public function distance(Node $node)
     {
+        echo "Distance started\n";
         // Will this work? Who knows!
         $n = 0;
         $nodes = $this->connections;
         while(!array_search($node, $nodes))
         {
             $n++;
-            $nodes = array_map("array_merge", array_map(function ($no) use ($nodes)
+            $nodes = flatten(array_map(function ($no) use ($nodes)
             {
-                var_dump($nodes);
-                echo "\n\n\n\n\n";
-                var_dump($no);
-                echo "\n\n\n\n\n";
-                echo "\n\n\n\n\n";
-                echo "\n\n\n\n\n";
-                echo "\n\n\n\n\n";
-                echo "\n\n\n\n\n";
-                echo "\n\n\n\n\n";
-                echo "\n\n\n\n\n";
-                echo "\n\n\n\n\n";
-                // Apparently, $no is an array here. I'm so confused
                 return $no->getConnections();
             }, $nodes));
+            var_dump($nodes);
         }
+        echo "Distance finished!\n";
         return $n;
     }
 }
