@@ -1,18 +1,22 @@
 #![allow(non_snake_case)]
 // https://www.reddit.com/r/dailyprogrammer/comments/5m034l/20170104_challenge_298_intermediate_too_many_or/
-extern crate util;
-use util::*;
+mod util;
+
+
 use std::fs::File;
 use std::io::Read;
 
 fn main() {
-    let mut f = File::open("input.txt").unwrap();
+    let mut f = match File::open("input.txt") {
+        Ok(f) => f,
+        Err(_) => {panic!("Something bad happened. There was probably no file.")}
+    };
     let mut s = String::new();
     f.read_to_string(&mut s).unwrap();
     for line in s.lines() {
         match get_unmatched_paren(&String::from(line)) {
             x if x == line.len() => println!("{}", line),
-            x => highlight_char(line, x) 
+            x => util::highlight_char(line, x) 
         }
     }
 }
