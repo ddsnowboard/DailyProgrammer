@@ -3,25 +3,28 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 )
 
-const (
-	NORTH = 0
-	EAST  = 0
-	WEST  = 1
-	SOUTH = 2
-)
-
-type dir int8
-
 type position struct {
-	Latitude  float32
-	Longitude float32
-	Direction dir
+	Latitude  float64
+	Longitude float64
+}
+
+type airplane struct {
+	Pos      position
+	Callsign string
+	Altitude float64
+	Country  string
+	ID       string
+}
+
+type response struct {
+	States [][]interface{} `json:"states"`
 }
 
 func main() {
@@ -32,6 +35,20 @@ func main() {
 	decoder := json.NewDecoder(resp.Body)
 	defer resp.Body.Close()
 	pos := getLocation()
+	var curr response
+	decoder.Decode(&curr)
+	planes := structifyArrays(curr.States[:])
+	closest := 0
+	closestDistance := squareDistance(pos, &planes[0].Pos)
+
+	for i := 1; i < len(planes); i++ {
+		if dist := squareDistance(pos, &planes[i].Pos); dist < closestDistance {
+			closestDistance = dist
+			closest = i
+		}
+	}
+	closestPlane := planes[closest]
+	fmt.Printf("%f\n%s\n%f\n%f\n%f\n%s\n%s\n", math.Pow(closestDistance, 0.5), closestPlane.Callsign, closestPlane.Pos.Latitude, closestPlane.Pos.Longitude, closestPlane.Altitude, closestPlane.Country, closestPlane.ID)
 }
 
 func getLocation() *position {
@@ -40,31 +57,73 @@ func getLocation() *position {
 	if len(pos) != EXPECTED_NUMBER_OF_ARGUMENTS {
 		printUsage()
 	}
-	lat, err := strconv.ParseFloat(pos[0], 32)
+	lat, err := strconv.ParseFloat(pos[0], 64)
 	if err != nil {
 		printUsage()
 	}
-	long, err := strconv.ParseFloat(pos[2], 32)
+	long, err := strconv.ParseFloat(pos[2], 64)
 	if err != nil {
 		printUsage()
-	}
-	var direction dir = 0
-	switch sDirection := strings.ToUpper(pos[1]); sDirection {
-	case "N":
-		direction |= NORTH
-	case "S":
-		direction |= SOUTH
 	}
 
-	switch sDirection := strings.ToUpper(pos[3]); sDirection {
-	case "W":
-		direction |= WEST
-	case "E":
-		direction |= EAST
+	if strings.ToUpper(pos[1]) == "S" {
+		lat *= -1
 	}
-        return &position{Latitude: float32(lat), Longitude: float32(long), Direction: direction}
+
+	if strings.ToUpper(pos[3]) == "W" {
+		long *= -1
+	}
+
+	out := position{Latitude: float64(lat), Longitude: float64(long)}
+	return &out
 }
 
 func printUsage() {
-	panic(fmt.Sprintf("Usage: \n%s LAT DIR LONG DIR"))
+	panic(fmt.Sprintf("Usage: \n%s LAT DIR LONG DIR", os.Args[0]))
+}
+
+func structifyArrays(bigArray [][]interface{}) []airplane {
+	out := make([]airplane, 0, len(bigArray))
+	for i := 0; i < len(bigArray); i++ {
+		curr := bigArray[i]
+		var currPlane airplane
+		if st, ok := curr[0].(string); ok {
+			currPlane.ID = st
+		} else {
+			currPlane.ID = ""
+		}
+
+		if st, ok := curr[1].(string); ok {
+			currPlane.Callsign = st
+		} else {
+			currPlane.Callsign = ""
+		}
+
+		if st, ok := curr[2].(string); ok {
+			currPlane.Country = st
+		} else {
+			currPlane.Country = ""
+		}
+
+		if fLong, okLong := curr[5].(float64); okLong {
+			if fLat, okLat := curr[6].(float64); okLat {
+				currPlane.Pos = position{Latitude: fLat, Longitude: fLong}
+			}
+		} else {
+			continue
+		}
+
+		if f, ok := curr[7].(float64); ok {
+			currPlane.Altitude = f
+		} else {
+			currPlane.Altitude = 0
+		}
+
+		out = append(out, currPlane)
+	}
+	return out
+}
+
+func squareDistance(a *position, b *position) float64 {
+	return math.Pow(a.Latitude-b.Latitude, 2) + math.Pow(a.Longitude-b.Longitude, 2)
 }

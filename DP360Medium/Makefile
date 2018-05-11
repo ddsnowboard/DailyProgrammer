@@ -10,4 +10,4 @@ clean :
 	go clean
 
 run : main
-	./main
+	./main 40.6413 N 73.7781 W
