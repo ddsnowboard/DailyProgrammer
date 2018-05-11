@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"math"
 	"net/http"
 	"os"
@@ -28,12 +29,9 @@ type response struct {
 }
 
 func main() {
-	resp, err := http.Get("https://opensky-network.org/api/states/all")
-	if err != nil {
-		panic("Welp")
-	}
-	decoder := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
+	data := getInput()
+	defer data.Close()
+	decoder := json.NewDecoder(data)
 	pos := getLocation()
 	var curr response
 	decoder.Decode(&curr)
@@ -126,4 +124,12 @@ func structifyArrays(bigArray [][]interface{}) []airplane {
 
 func squareDistance(a *position, b *position) float64 {
 	return math.Pow(a.Latitude-b.Latitude, 2) + math.Pow(a.Longitude-b.Longitude, 2)
+}
+
+func getInput() io.ReadCloser {
+	resp, err := http.Get("https://opensky-network.org/api/states/all")
+	if err != nil {
+		panic("Welp")
+	}
+	return resp.Body
 }
