@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"net/http"
+	// "net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -80,56 +80,79 @@ func printUsage() {
 	panic(fmt.Sprintf("Usage: \n%s LAT DIR LONG DIR", os.Args[0]))
 }
 
-func structifyArrays(bigArray [][]interface{}) []airplane {
-	out := make([]airplane, 0, len(bigArray))
+func structifyArrays(bigArray [][]interface{}) []*airplane {
+	out := make([]*airplane, 0, len(bigArray))
+	ch := make(chan *airplane)
 	for i := 0; i < len(bigArray); i++ {
 		curr := bigArray[i]
-		var currPlane airplane
-		if st, ok := curr[0].(string); ok {
-			currPlane.ID = st
-		} else {
-			currPlane.ID = ""
-		}
-
-		if st, ok := curr[1].(string); ok {
-			currPlane.Callsign = st
-		} else {
-			currPlane.Callsign = ""
-		}
-
-		if st, ok := curr[2].(string); ok {
-			currPlane.Country = st
-		} else {
-			currPlane.Country = ""
-		}
-
-		if fLong, okLong := curr[5].(float64); okLong {
-			if fLat, okLat := curr[6].(float64); okLat {
-				currPlane.Pos = position{Latitude: fLat, Longitude: fLong}
-			}
-		} else {
-			continue
-		}
-
-		if f, ok := curr[7].(float64); ok {
-			currPlane.Altitude = f
-		} else {
-			currPlane.Altitude = 0
-		}
-
-		out = append(out, currPlane)
+		go structifyArray(curr, ch)
 	}
+
+	for i := 0; i < len(bigArray); i++ {
+		curr := <-ch
+		if curr != nil {
+			out = append(out, curr)
+		}
+	}
+
 	return out
+}
+
+func structifyArray(arr []interface{}, ch chan *airplane) {
+	var currPlane airplane
+	if st, ok := arr[0].(string); ok {
+		currPlane.ID = st
+	} else {
+		currPlane.ID = ""
+	}
+
+	if st, ok := arr[1].(string); ok {
+		currPlane.Callsign = st
+	} else {
+		currPlane.Callsign = ""
+	}
+
+	if st, ok := arr[2].(string); ok {
+		currPlane.Country = st
+	} else {
+		currPlane.Country = ""
+	}
+
+	if fLong, okLong := arr[5].(float64); okLong {
+		if fLat, okLat := arr[6].(float64); okLat {
+			currPlane.Pos = position{Latitude: fLat, Longitude: fLong}
+		}
+	} else {
+		ch <- nil
+	}
+
+	if f, ok := arr[7].(float64); ok {
+		currPlane.Altitude = f
+	} else {
+		currPlane.Altitude = 0
+	}
+
+	ch <- &currPlane
 }
 
 func squareDistance(a *position, b *position) float64 {
 	return math.Pow(a.Latitude-b.Latitude, 2) + math.Pow(a.Longitude-b.Longitude, 2)
 }
 
+/*
 func getInput() io.ReadCloser {
 	resp, err := http.Get("https://opensky-network.org/api/states/all")
 	if err != nil {
 		panic("Welp")
 	}
 	return resp.Body
+}
+*/
+
+func getInput() io.ReadCloser {
+	f, err := os.Open("input.json")
+	if err != nil {
+		panic("Welp")
+	}
+	return f
 }
