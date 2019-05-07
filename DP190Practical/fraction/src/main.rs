@@ -12,7 +12,7 @@ struct Fraction {
 }
 
 fn xor(a: bool, b: bool) -> bool {
-    return !(a && b) && (a || b);
+    !(a && b) && (a || b)
 }
 
 fn sgn(a: InputNumType) -> InputNumType {
@@ -25,6 +25,10 @@ fn sgn(a: InputNumType) -> InputNumType {
 
 impl Fraction {
     fn _reduce(&mut self) {
+        if self.numerator == 0 {
+            self.denominator = 1;
+            return;
+        }
         let mut found_one = false;
         {
             let top: &mut NumType = &mut self.numerator;
@@ -51,7 +55,7 @@ impl Fraction {
         let top = (top * sgn(top)) as NumType;
         let bottom = (bottom * sgn(bottom)) as NumType;
         let mut out = Fraction {
-            sign: sign,
+            sign,
             numerator: top,
             denominator: bottom,
         };
@@ -79,31 +83,31 @@ impl ops::Add<Fraction> for Fraction {
     type Output = Fraction;
     fn add(mut self, mut rhs: Fraction) -> Fraction {
         if self.denominator != rhs.denominator {
-            let newDenominator = self.denominator * rhs.denominator;
+            let new_denominator = self.denominator * rhs.denominator;
             self.numerator *= rhs.denominator;
             rhs.denominator *= self.denominator;
             rhs.numerator *= self.denominator;
-            self.denominator = newDenominator;
+            self.denominator = new_denominator;
         }
-        let (sign, newNumerator) = match (self.sign, rhs.sign) {
+        let (sign, new_numerator) = match (self.sign, rhs.sign) {
             (a, b) if a == b => (self.sign, self.numerator + rhs.numerator),
             (true, false) if self.numerator >= rhs.numerator => {
                 (true, self.numerator - rhs.numerator)
             }
             (true, false) if self.numerator < rhs.numerator => {
-                (false, rhs.numerator - self.denominator)
+                (false, rhs.numerator - self.numerator)
             }
             (false, true) if self.numerator >= rhs.numerator => {
                 (false, self.numerator - rhs.numerator)
             }
             (false, true) if self.numerator < rhs.numerator => {
-                (true, rhs.numerator - self.denominator)
+                (true, rhs.numerator - self.numerator)
             }
             _ => panic!("We shouldn't have gotten here"),
         };
         let mut out = Fraction {
-            sign: sign,
-            numerator: newNumerator,
+            sign,
+            numerator: new_numerator,
             denominator: self.denominator,
         };
         out._reduce();
@@ -111,8 +115,53 @@ impl ops::Add<Fraction> for Fraction {
     }
 }
 
-fn main() {
-    println!("Hello world!");
+impl ops::Add<u32> for Fraction {
+    type Output = Fraction;
+    fn add(self, rhs: u32) -> Fraction {
+        let r = Fraction::new(rhs as i32, 1).unwrap();
+        self + r
+    }
+}
+
+impl ops::Sub<Fraction> for Fraction {
+    type Output = Fraction;
+    fn sub(self, mut rhs: Fraction) -> Fraction {
+        rhs.sign = !rhs.sign;
+        self + rhs
+    }
+}
+
+impl ops::AddAssign<Fraction> for Fraction {
+    fn add_assign(&mut self, other: Fraction) {
+        let new = *self + other;
+        *self = new;
+    }
+}
+
+impl ops::Sub<u32> for Fraction {
+    type Output = Fraction;
+    fn sub(self, rhs: u32) -> Fraction {
+        let new_right = Fraction {
+            sign: false,
+            numerator: rhs,
+            denominator: 1,
+        };
+        self + new_right
+    }
+}
+
+fn main() {}
+
+#[test]
+fn subtract_test() {
+    let a = Fraction::new(5, 3).unwrap();
+    let b = Fraction::new(8, 3).unwrap();
+    let c = Fraction::new(7, 6).unwrap();
+    let d = Fraction::new(-7, 12).unwrap();
+    assert_eq!(a - a, Fraction::new(0, 1).unwrap());
+    assert_eq!(a - b, Fraction::new(-3, 3).unwrap());
+    assert_eq!(b - a, Fraction::new(3, 3).unwrap());
+    assert_eq!(c - d, Fraction::new(21, 12).unwrap());
 }
 
 #[test]
@@ -142,19 +191,22 @@ fn add_test() {
         c + d,
         Fraction {
             sign: true,
-            numerator: 1,
-            denominator: 2
+            numerator: 7,
+            denominator: 12
         }
     );
 
     assert_eq!(
         d + c,
         Fraction {
-            sign: false,
-            numerator: 1,
-            denominator: 2
+            sign: true,
+            numerator: 7,
+            denominator: 12
         }
     );
+
+    assert_eq!(a + 5, Fraction::new(20, 3).unwrap());
+    assert_eq!(a + 0, a);
 }
 
 #[test]
@@ -226,4 +278,7 @@ fn new_test() {
             denominator: 6
         })
     );
+    let f = n(0, 33);
+    let g = n(0, 1);
+    assert_eq!(f, g);
 }
