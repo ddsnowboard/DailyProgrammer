@@ -1,41 +1,39 @@
 #[macro_use]
 extern crate lazy_static;
-
 extern crate counter;
 extern crate rayon;
 
+mod morse;
+
+use crate::morse::morse::*;
 use counter::Counter;
 use rayon::prelude::*;
-use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 
-lazy_static! {
-    static ref MORSE_MAP: HashMap<char, &'static str> = "abcdefghijklmnopqrstuvwxyz"
-        .chars()
-        .zip(vec![
-            ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..",
-            "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-",
-            "-.--", "--..",
-        ])
-        .collect();
-    static ref WORD_LIST: Vec<String> = BufReader::new(File::open("wordlist").unwrap())
-        .lines()
-        .map(|s| s.unwrap())
-        .collect();
-    static ref WORD_MORSE: HashMap<String, String> =
-        WORD_LIST.iter().map(|s| (s.clone(), smorse(s))).collect();
-}
-
 fn main() {
-    println!("Optional 1: {}", optional1());
-    println!("Optional 2: {}", optional2());
-    println!("Optional 3: {}", optional3());
-    println!("Optional 4: {}", optional4());
-    println!("Optional 5: {}", optional5());
+    let input_lines: Vec<_> = BufReader::new(File::open("bigInput").unwrap())
+        .lines()
+        .map(|r| r.unwrap())
+        .collect();
+
+    let responses: Vec<_> = input_lines
+        .par_iter()
+        .map(|s| {
+            let out = smalpha(s);
+            println!("finished {}", s);
+            out
+        })
+        .collect();
+    for r in responses.into_iter() {
+        let r = r.unwrap();
+        assert_eq!(*ALPHABET_SET, r.chars().collect::<HashSet<_>>());
+    }
 }
 
+#[allow(dead_code)]
 fn optional1() -> String {
     let counter: Counter<_> = WORD_MORSE.iter().map(|(_, v)| v).collect();
     counter
@@ -47,6 +45,7 @@ fn optional1() -> String {
         .to_string()
 }
 
+#[allow(dead_code)]
 fn optional2() -> &'static str {
     const FIFTEEN_DASHES: &'static str = "---------------";
     if let Some((word, _)) = WORD_MORSE
@@ -59,6 +58,8 @@ fn optional2() -> &'static str {
         panic!("Couldn't find one");
     }
 }
+
+#[allow(dead_code)]
 fn optional3() -> String {
     let is_balanced = |s: &str| -> bool { count_letters(s, &'.') == count_letters(s, &'-') };
     WORD_MORSE
@@ -72,6 +73,7 @@ fn optional3() -> String {
         .to_string()
 }
 
+#[allow(dead_code)]
 fn optional4() -> String {
     let is_palindrome = |s: &str| -> bool {
         s.chars()
@@ -89,6 +91,8 @@ fn optional4() -> String {
         .unwrap()
         .to_string()
 }
+
+#[allow(dead_code)]
 fn optional5() -> String {
     let mut out = Vec::new();
     let mut morse: String = ".............".to_string();
@@ -110,98 +114,4 @@ fn optional5() -> String {
         }
     }
     out.join("\n")
-}
-
-fn increment_morse(mut s: String) -> Option<String> {
-    for idx in (0..s.len()).rev() {
-        match &s[idx..idx + 1] {
-            "." => {
-                s.replace_range(idx..idx + 1, &"-");
-                return Some(s);
-            }
-            "-" => {
-                s.replace_range(idx..idx + 1, &".");
-            }
-            _ => {
-                panic!(
-                    "There was something there shouldn't have been in the string; {}",
-                    s
-                );
-            }
-        }
-    }
-    None
-}
-
-fn get_morse(c: char) -> &'static str {
-    if !c.is_ascii_alphabetic() {
-        panic!("{} is not a letter of the alphabet", c);
-    }
-
-    let lowered: char = if c.is_uppercase() {
-        c.to_lowercase().to_string().chars().next().unwrap()
-    } else {
-        c
-    };
-
-    assert!(MORSE_MAP.contains_key(&lowered));
-    MORSE_MAP[&lowered]
-}
-
-fn smorse(s: &str) -> String {
-    let mut out = String::new();
-    const LONGEST_MORSE_STRING: usize = 4;
-    out.reserve(s.len() * LONGEST_MORSE_STRING);
-    for c in s.chars() {
-        out.push_str(get_morse(c));
-    }
-    out
-}
-
-fn count_letters(s: &str, c: &char) -> usize {
-    s.chars().filter(|ch| ch == c).count()
-}
-
-#[test]
-fn test_get_morse() {
-    assert_eq!(get_morse('s'), "...");
-}
-
-#[test]
-fn test_simple_smorse() {
-    assert_eq!(smorse("SOS"), "...---...");
-    assert_eq!(smorse("sos"), "...---...");
-    assert_eq!(smorse("sOs"), "...---...");
-}
-
-#[test]
-#[ignore]
-fn test_enable1() {
-    const NUM_DOTS: usize = 2_499_157;
-    const NUM_DASHES: usize = 1_565_081;
-    let mut counted_dots = 0;
-    let mut counted_dashes = 0;
-    WORD_LIST.iter().map(|s| smorse(&s)).for_each(|s| {
-        counted_dots += count_letters(&s, &'.');
-        counted_dashes += count_letters(&s, &'-');
-    });
-    assert_eq!(counted_dots, NUM_DOTS);
-    assert_eq!(counted_dashes, NUM_DASHES);
-}
-
-#[test]
-fn test_increment_morse() {
-    assert_eq!(
-        Some(".....-".to_string()),
-        increment_morse("......".to_string())
-    );
-    assert_eq!(
-        Some("-....-".to_string()),
-        increment_morse("-.....".to_string())
-    );
-    assert_eq!(
-        Some("-.....".to_string()),
-        increment_morse(".-----".to_string())
-    );
-    assert_eq!(None, increment_morse("------".to_string()));
 }
