@@ -5,7 +5,7 @@ extern crate rayon;
 
 mod morse;
 
-use crate::morse::morse::*;
+use crate::morse::*;
 use counter::Counter;
 use rayon::prelude::*;
 use std::collections::HashSet;
