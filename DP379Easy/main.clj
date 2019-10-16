@@ -1,11 +1,6 @@
-(defn fst [l]
-  (get l 0))
-(defn snd [l]
-  (get l 1))
-
 (defn deltifyBrackets [brackets]
-  (let [endpts (map fst brackets)
-        rates (map snd (subvec brackets 1))
+  (let [endpts (map first brackets)
+        rates (map second (subvec brackets 1))
         ranges (partition 2 1 endpts)]
     (map vector ranges rates)
   ))
@@ -25,7 +20,7 @@
 (defn tax [income] 
   (int (reduce + 
           (map 
-            (fn [rateTuple] (taxBracket income rateTuple))
+            #(taxBracket income %)
             brackets))))
 
 (println (tax 0))
