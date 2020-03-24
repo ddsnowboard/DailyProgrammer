@@ -1,10 +1,10 @@
-use crate::Main::{same_necklace, rotate_n};
+use crate::main::{same_necklace, rotate_n};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::collections::HashSet;
 
-mod Main {
+mod main {
 
     pub fn rotate_n(s: &str, n: usize) -> String {
         let length = s.len();
