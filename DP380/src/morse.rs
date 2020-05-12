@@ -19,14 +19,16 @@ lazy_static! {
         .collect();
     pub static ref WORD_MORSE: HashMap<String, String> =
         WORD_LIST.iter().map(|s| (s.clone(), smorse(s))).collect();
-    pub static ref MORSE_LETTER: HashMap<String, char> =
-        MORSE_MAP.iter().map(|(k, v)| (v.to_string(), *k)).collect();
+    pub static ref MORSE_LETTER: HashMap<String, char> = MORSE_MAP
+        .iter()
+        .map(|(k, v)| ((*v).to_string(), *k))
+        .collect();
     pub static ref ALPHABET_SET: HashSet<char> = [
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
         's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     ]
-    .into_iter()
-    .map(|&x| x)
+    .iter()
+    .copied()
     .collect();
 }
 
@@ -40,7 +42,7 @@ fn possible_first_letters(s: &str, remaining: &HashSet<char>) -> Vec<char> {
     remaining
         .iter()
         .filter(|c| s.starts_with(MORSE_MAP[c]))
-        .map(|&c| c)
+        .copied()
         .collect()
 }
 
@@ -110,8 +112,8 @@ pub fn smorse(s: &str) -> String {
     out
 }
 
-pub fn count_letters(s: &str, c: &char) -> usize {
-    s.chars().filter(|ch| ch == c).count()
+pub fn count_letters(s: &str, c: char) -> usize {
+    s.chars().filter(|ch| *ch == c).count()
 }
 
 #[test]
@@ -127,15 +129,14 @@ fn test_simple_smorse() {
 }
 
 #[test]
-#[ignore]
 fn test_enable1() {
     const NUM_DOTS: usize = 2_499_157;
     const NUM_DASHES: usize = 1_565_081;
     let mut counted_dots = 0;
     let mut counted_dashes = 0;
     WORD_LIST.iter().map(|s| smorse(&s)).for_each(|s| {
-        counted_dots += count_letters(&s, &'.');
-        counted_dashes += count_letters(&s, &'-');
+        counted_dots += count_letters(&s, '.');
+        counted_dashes += count_letters(&s, '-');
     });
     assert_eq!(counted_dots, NUM_DOTS);
     assert_eq!(counted_dashes, NUM_DASHES);
@@ -163,7 +164,7 @@ fn test_smalpha() {
     const STRINGS: [&'static str; 4] = ["this", "is", "some", "asdfgh"];
     for s in STRINGS.iter() {
         let morsed = smorse(s);
-        let reversed = find_order(&morsed, s.chars().collect()).unwrap();
+        let reversed = find_order(&morsed, &mut s.chars().collect()).unwrap();
         assert_eq!(morsed, smorse(&reversed));
     }
 }
@@ -173,7 +174,7 @@ fn test_smalpha_optimized() {
     const STRINGS: [&'static str; 4] = ["this", "is", "some", "asdfgh"];
     for s in STRINGS.iter() {
         let morsed = smorse(s);
-        let reversed = new_find_order(&morsed, &mut s.chars().collect()).unwrap();
+        let reversed = find_order(&morsed, &mut s.chars().collect()).unwrap();
         assert_eq!(morsed, smorse(&reversed));
     }
 }

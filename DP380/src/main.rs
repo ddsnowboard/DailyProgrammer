@@ -36,23 +36,19 @@ fn main() {
 #[allow(dead_code)]
 fn optional1() -> String {
     let counter: Counter<_> = WORD_MORSE.iter().map(|(_, v)| v).collect();
-    counter
+    (*counter
         .iter()
         .filter(|(_, ct)| **ct == 13)
         .map(|(k, _)| k)
         .next()
-        .unwrap()
-        .to_string()
+        .unwrap())
+    .to_string()
 }
 
 #[allow(dead_code)]
 fn optional2() -> &'static str {
-    const FIFTEEN_DASHES: &'static str = "---------------";
-    if let Some((word, _)) = WORD_MORSE
-        .iter()
-        .filter(|(_, v)| v.contains(FIFTEEN_DASHES))
-        .next()
-    {
+    const FIFTEEN_DASHES: &str = "---------------";
+    if let Some((word, _)) = WORD_MORSE.iter().find(|(_, v)| v.contains(FIFTEEN_DASHES)) {
         word
     } else {
         panic!("Couldn't find one");
@@ -61,7 +57,7 @@ fn optional2() -> &'static str {
 
 #[allow(dead_code)]
 fn optional3() -> String {
-    let is_balanced = |s: &str| -> bool { count_letters(s, &'.') == count_letters(s, &'-') };
+    let is_balanced = |s: &str| -> bool { count_letters(s, '.') == count_letters(s, '-') };
     WORD_MORSE
         .iter()
         .filter(|(w, _)| w.len() == 21)
